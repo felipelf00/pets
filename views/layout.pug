@@ -1,7 +1,24 @@
 doctype html
-html
+html(lang='pt-br')
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/output.css')
+
   body
-    block content
+    div(class="flex")
+      div(class="p-5 min-w-44")
+        block sidebar
+          ul 
+            li 
+              a(href='/registry') Página inicial
+            li 
+              a(href='/registry/pets') Pets cadastrados 
+            li 
+              a(href='/registry/tutors') Tutores cadastrados 
+            li 
+              a(href='/registry/pet/create') Cadastrar novo pet 
+            li 
+              a(href='/registry/tutor/create') Cadastrar novo tutor
+      main(class="p-5")
+        block content
