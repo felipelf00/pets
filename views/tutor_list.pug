@@ -1,0 +1,9 @@
+extends layout 
+
+block content 
+  h1=title 
+  p Estes são os tutores cadastrados no nosso banco de dados:
+  ul 
+    each tutor in tutors 
+      li 
+        a(href=`/registry/tutor/${tutor._id}`) #{tutor.name}

@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+  h1=title 
+  br
+  p Espécie: #{pet.species}
+  p Descrição: #{pet.description}
+  p Peso: #{pet.weight} kg
+  p Sexo: #{pet.sex}
+  p Idade: #{pet.age}
+  p Data de nascimento: #{pet.date_of_birth}
+  p Tutor:
+    if pet.tutor
+      a(href=`/registry/tutor/${pet.tutor._id}`)
+    else 
+      |  Não especificado

@@ -1,14 +1,35 @@
 const Tutor = require("../models/tutor");
+const Pet = require("../models/pet");
 const asyncHandler = require("express-async-handler");
 
 // Display all tutors
 exports.tutor_list = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: lista de tutores");
+  // res.send("Não implementado: lista de tutores");
+  const allTutors = await Tutor.find().sort({ name: 1 }).exec();
+
+  res.render("tutor_list", {
+    title: "Lista de tutores",
+    tutors: allTutors,
+  });
 });
 
 // Display specific tutor
 exports.tutor_detail = asyncHandler(async (req, res, next) => {
-  res.send(`Não implementado: detalhe tutor: ${req.params.id}`);
+  const [tutor, allPetsByTutor] = await Promise.all([
+    Tutor.findById(req.params.id).exec(),
+    Pet.find({ tutor: req.params.id }).exec(),
+  ]);
+
+  if (tutor === null) {
+    const err = new Error("Tutor não encontrado");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("tutor_detail", {
+    title: tutor.name,
+    tutor: tutor,
+  });
 });
 
 // Create tutor get

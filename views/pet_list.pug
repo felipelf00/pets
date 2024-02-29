@@ -1,0 +1,9 @@
+extends layout 
+
+block content 
+  h1=title
+  p Aqui estão listados os pets presentes no nosso banco de dados: 
+  ul 
+    each pet in pets 
+      li
+        a(href=`/registry/pet/${pet._id}`) #{pet.name}
