@@ -2,6 +2,7 @@ const Pet = require("../models/pet");
 const Tutor = require("../models/tutor");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
+const { DateTime } = require("luxon");
 
 // Index
 exports.index = asyncHandler(async (req, res, next) => {
@@ -56,6 +57,11 @@ exports.pet_create_get = asyncHandler(async (req, res, next) => {
 
 // Create pet post
 exports.pet_create_post = [
+  // (req, res, next) => {
+  //   console.log("Pre-date: " + req.body.date_of_birth);
+  //   next();
+  // },
+
   body("name", "Nome não pode estar vazio")
     .trim()
     .isLength({ min: 1 })
@@ -68,7 +74,7 @@ exports.pet_create_post = [
   body("weight")
     .optional()
     .trim()
-    .custom((value) => {
+    .custom((value, { req }) => {
       if (value) {
         const valueWithDot = value.replace(",", ".");
         if (!isNaN(parseFloat(valueWithDot))) {
@@ -83,14 +89,14 @@ exports.pet_create_post = [
     .trim()
     .isIn(["macho", "fêmea"])
     .withMessage('Sexo deve ser "macho" ou "fêmea"'),
-  body("date_of_birth", "Data inválida")
-    .optional({ values: "falsy" })
-    .isISO8601()
-    .toDate(),
+
   body("tutor").optional().trim().isLength({ min: 1 }).escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
+
+    // console.log("req date" + req.body.date_of_birth);
+    //const testDate = req.body.date_of_birth.toISOString().split("T")[0];
 
     const pet = new Pet({
       name: req.body.name,
@@ -101,6 +107,10 @@ exports.pet_create_post = [
       date_of_birth: req.body.date_of_birth,
       tutor: req.body.tutor,
     });
+
+    // console.log("pet date: " + pet.date_of_birth);
+    // console.log("test date: " + testDate);
+    console.dir(errors.array());
 
     if (!errors.isEmpty()) {
       const allTutors = Tutor.find().sort({ name: 1 }).exec();
@@ -117,6 +127,11 @@ exports.pet_create_post = [
     }
   }),
 ];
+
+// body("date_of_birth", "Data inválida")
+// .optional({ values: "falsy" })
+// .isISO8601()
+// .toDate(),
 
 // Delete pet get
 exports.pet_delete_get = asyncHandler(async (req, res, next) => {
