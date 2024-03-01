@@ -2,7 +2,6 @@ const Pet = require("../models/pet");
 const Tutor = require("../models/tutor");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const { DateTime } = require("luxon");
 
 // Index
 exports.index = asyncHandler(async (req, res, next) => {
@@ -33,6 +32,8 @@ exports.pet_detail = asyncHandler(async (req, res, next) => {
   // res.send(`Não implementado: detalhe pet: ${req.params.id}`);
   const pet = await Pet.findById(req.params.id).populate("tutor").exec();
 
+  console.log("Pet: " + pet);
+
   if (pet === null) {
     const err = new Error("Pet não encontrado");
     err.status = 404;
@@ -57,22 +58,17 @@ exports.pet_create_get = asyncHandler(async (req, res, next) => {
 
 // Create pet post
 exports.pet_create_post = [
-  // (req, res, next) => {
-  //   console.log("Pre-date: " + req.body.date_of_birth);
-  //   next();
-  // },
-
   body("name", "Nome não pode estar vazio")
     .trim()
     .isLength({ min: 1 })
     .escape(),
   body("species", "Espécie deve ter ao menos 3 caracteres")
     .trim()
-    .isLength({ min: 3 })
+    .isLength({ min: 2 })
     .escape(),
-  body("description").optional().trim().escape(),
+  body("description").optional({ checkFalsy: true }).trim().escape(),
   body("weight")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .custom((value, { req }) => {
       if (value) {
@@ -85,18 +81,21 @@ exports.pet_create_post = [
       throw new Error("O peso deve ser um número");
     }),
   body("sex")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isIn(["macho", "fêmea"])
     .withMessage('Sexo deve ser "macho" ou "fêmea"'),
-
-  body("tutor").optional().trim().isLength({ min: 1 }).escape(),
+  body("date_of_birth", "Data inválida")
+    .optional({ values: "falsy" })
+    .isISO8601()
+    .toDate(),
+  body("tutor").optional({ checkFalsy: true }).trim().escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
-    // console.log("req date" + req.body.date_of_birth);
-    //const testDate = req.body.date_of_birth.toISOString().split("T")[0];
+    if (req.body.sex === "") req.body.sex = null;
+    if (req.body.tutor === "") req.body.tutor = null;
 
     const pet = new Pet({
       name: req.body.name,
@@ -108,10 +107,6 @@ exports.pet_create_post = [
       tutor: req.body.tutor,
     });
 
-    // console.log("pet date: " + pet.date_of_birth);
-    // console.log("test date: " + testDate);
-    console.dir(errors.array());
-
     if (!errors.isEmpty()) {
       const allTutors = Tutor.find().sort({ name: 1 }).exec();
 
@@ -122,16 +117,12 @@ exports.pet_create_post = [
         errors: errors.array(),
       });
     } else {
+      console.log("Pet before save: ", pet);
       await pet.save();
       res.redirect(pet.url);
     }
   }),
 ];
-
-// body("date_of_birth", "Data inválida")
-// .optional({ values: "falsy" })
-// .isISO8601()
-// .toDate(),
 
 // Delete pet get
 exports.pet_delete_get = asyncHandler(async (req, res, next) => {

@@ -1,0 +1,24 @@
+extends layout
+
+block content 
+  h1=title 
+
+  form(method="POST")
+    div.form-group
+      label(for="name") Nome:
+      input#name(type="text" placeholder="Clênidas Henrique do Amaral" name="name" required value=(tutor===undefined ? "" : tutor.name))
+    div.form-group
+      label(for="phone") Telefone:
+      input#phone(type="text" placeholder="Ex: (12) 93456-7890" name="phone" required value=(tutor===undefined ? "" : tutor.phone))
+    div.form-group
+      label(for="email") E-mail:
+      input#email(type="email" placeholder="Ex: clenidas@bol.com.br" name="email" required value=(tutor===undefined ? "" : tutor.email))
+    div.form-group
+      label(for="address") Endereço:
+      input#phone(type="text" placeholder="Rua 31 de abril, 678, Guarabira-PB" name="address" required value=(tutor===undefined ? "" : tutor.address))
+    button.btn(type="submit") Enviar
+
+    if errors
+      ul
+        for error in errors
+          li!= error.msg

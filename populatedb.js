@@ -24,8 +24,8 @@ async function main() {
   console.log("Debug: About to connect");
   await mongoose.connect(mongoDB);
   console.log("Debug: Should be connected?");
-  await createPets();
   await createTutors();
+  await createPets();
 
   console.log("Debug: Closing mongoose");
   mongoose.connection.close();
@@ -75,6 +75,7 @@ async function tutorCreate(index, name, phone, email, address) {
   await tutor.save();
   tutors[index] = tutor;
   console.log(`Added tutor ${name}`);
+  console.log("Tutors array: " + tutors);
 }
 
 async function createTutors() {

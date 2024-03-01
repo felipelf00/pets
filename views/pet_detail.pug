@@ -5,12 +5,14 @@ block content
   br
   p Espécie: #{pet.species}
   p Descrição: #{pet.description}
-  p Peso: #{pet.weight} kg
+  p Peso: 
+    if pet.weight
+      | #{pet.weight} kg
   p Sexo: #{pet.sex}
   p Idade: #{pet.age}
-  p Data de nascimento: #{pet.date_of_birth}
+  p Data de nascimento: #{pet.date_of_birth_formatted}
   p Tutor:
     if pet.tutor
-      a(href=`/registry/tutor/${pet.tutor._id}`)
+      a(href=`/registry/tutor/${pet.tutor._id}`)  #{pet.tutor.name}
     else 
       |  Não especificado

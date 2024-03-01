@@ -5,4 +5,8 @@ block content
   p Telefone: #{tutor.phone}
   p E-mail: #{tutor.email}
   p Endereço: #{tutor.address}
-  
+  p Pets: 
+  ul
+    for pet in pets 
+      li 
+        a(href=`/registry/pet/${pet._id}`) #{pet.name}
