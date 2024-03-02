@@ -6,10 +6,11 @@ html(lang='pt-br')
     link(rel='stylesheet', href='/stylesheets/output.css')
     link(rel='icon', type="image/png", href="/favicon.png")
 
-  body
+  body(class="border-violet-600 bg-zinc-50 border-[30px] h-screen")
     div(class="flex")
-      div(class="p-5 min-w-44")
+      div(class="p-5 min-w-[220px]")
         block sidebar
+          img(src="/images/bil.png" class="w-24 mx-auto my-[19px] border-b-2 border-gray-400")
           ul 
             li 
               a(href='/registry') Página inicial
@@ -21,5 +22,5 @@ html(lang='pt-br')
               a(href='/registry/pet/create') Cadastrar novo pet 
             li 
               a(href='/registry/tutor/create') Cadastrar novo tutor
-      main(class="p-5")
+      main(class="py-5 px-10 max-w-screen-lg")
         block content

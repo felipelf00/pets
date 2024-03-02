@@ -3,5 +3,7 @@ extends layout
 block content
   h1= title
   p Seja bem-vindo! 
-  p Esse site é permite consultar nosso banco de dados de pets e tutores, bem como realizar operações de cadastramento, modificação e exclusão no banco de dados (requer permissão).
-  p No momento, nosso banco de dados tem !{`<strong>${petCount} pets</strong>`} e !{`<strong>${tutorCount} tutores</strong>`} cadastrados.
+  br
+  p Esse site permite consultar nosso banco de dados de pets e tutores, bem como realizar operações de cadastramento, modificação e exclusão no banco de dados (requer permissão).
+  br
+  p No momento, nosso banco de dados tem !{`<a href="/registry/pets"><strong>${petCount} pets</strong></a>`} e !{`<strong>${tutorCount} tutores</strong>`} cadastrados.
