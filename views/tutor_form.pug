@@ -1,22 +1,24 @@
 extends layout
 
 block content 
-  h1=title 
+  h1(class="m-auto text-center")=title 
 
-  form(method="POST")
-    div.form-group
+  form(method="POST" class="max-w-md m-auto")
+    div(class="form-group flex flex-col")
       label(for="name") Nome:
       input#name(type="text" placeholder="Clênidas Henrique do Amaral" name="name" required value=(tutor===undefined ? "" : tutor.name))
-    div.form-group
+    div(class="form-group flex flex-col")
       label(for="phone") Telefone:
       input#phone(type="text" placeholder="Ex: (12) 93456-7890" name="phone" required value=(tutor===undefined ? "" : tutor.phone))
-    div.form-group
+    div(class="form-group flex flex-col")
       label(for="email") E-mail:
       input#email(type="email" placeholder="Ex: clenidas@bol.com.br" name="email" required value=(tutor===undefined ? "" : tutor.email))
-    div.form-group
+    div(class="form-group flex flex-col")
       label(for="address") Endereço:
       input#phone(type="text" placeholder="Rua 31 de Abril, 678, Guarabira-PB" name="address" required value=(tutor===undefined ? "" : tutor.address))
-    button.btn(type="submit") Enviar
+    
+    div(class="flex justify-center")  
+      button(type="submit" class="btn my-3") Enviar
 
     if errors
       ul

@@ -1,10 +1,10 @@
 extends layout 
 
 block content 
-  h1=title 
+  h1(class="m-auto text-center")=title 
   p Estes são os tutores cadastrados no nosso banco de dados:
   br
-  ul 
+  ul(class="list-disc ml-8")
     each tutor in tutors 
       li 
         a(href=`/registry/tutor/${tutor._id}`) #{tutor.name}

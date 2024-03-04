@@ -1,32 +1,33 @@
 extends layout 
 
 block content 
-  h1=title 
+  h1(class="m-auto text-center")=title 
 
-  form(method="POST")
-    div.form-group 
+  form(method="POST" class="max-w-md m-auto")
+    div(class="form-group flex flex-col")
       label(for="name") Nome:
-      input#name(type="text" placeholder="Belinha, Totó, Irineu..." name="name" required value=(pet===undefined ? "" : pet.name)) 
-    div.form-group
+      input#name(type="text" class="w-full" placeholder="Belinha, Totó, Irineu..." name="name" required value=(pet===undefined ? "" : pet.name)) 
+    div(class="form-group flex flex-col")
       label(for="species") Espécie: 
-      input#species(type="text" placeholder="Cão, gato, tartarugo..." name="species" required value=(pet===undefined ? "" : pet.species))
-    div.form-group
+      input#species(type="text" class="w-full" placeholder="Cão, gato, tartarugo..." name="species" required value=(pet===undefined ? "" : pet.species))
+    div(class="form-group flex flex-col")
       label(for="description") Descrição: 
-      input#description(type="text" placeholder="Pêlo curto, cor caramelo..." name="description" value=(pet===undefined ? "" : pet.description))
-    div.form-group
-      label(for="weight") Peso (kg):
-      input#weight(type="text" name="weight" value=(pet===undefined ? "" : pet.weight))
-    div.form-group
-      label(for="sex") Sexo:
-    select#sex(name="sex")
-      option(value="" selected=(pet===undefined || pet.sex === "")) 
-      option(value="macho" selected=(pet && pet.sex === "macho")) Macho
-      option(value="fêmea" selected=(pet && pet.sex === "fêmea")) Fêmea
-    div.form-group
+      input#description(type="text" class="w-full" placeholder="Pêlo curto, cor caramelo..." name="description" value=(pet===undefined ? "" : pet.description))
+    div(class="form-group flex justify-between")
+      div
+        label(for="weight" class="mr-4") Peso (kg):
+        input#weight(type="text" class="w-20" name="weight" value=(pet===undefined ? "" : pet.weight))
+      div  
+        label(for="sex" class="mr-4") Sexo:
+        select#sex(name="sex")
+          option(value="" selected=(pet===undefined || pet.sex === "")) 
+          option(value="macho" selected=(pet && pet.sex === "macho")) Macho
+          option(value="fêmea" selected=(pet && pet.sex === "fêmea")) Fêmea
+    div(class="form-group flex justify-between items-center")
       label(for="date_of_birth") Data de nascimento (aproximada):
       //- input#date_of_birth(type='date' name='date_of_birth' value=(undefined===pet ? '' : pet.date_of_birth) )
       input#date_of_birth(type='date' name='date_of_birth')
-    div.form-group
+    div(class="form-group flex flex-col")
       label(for="tutor") Nome do tutor:
       select#tutor(name="tutor" value=(pet===undefined ? "" : pet.tutor))
         option(value="") Selecione um tutor
@@ -38,8 +39,8 @@ block content
               option(value=tutor._id) #{tutor.name}
           else
             option(value=tutor._id) #{tutor.name}
-      
-    button.btn(type="submit") Enviar
+    div(class="flex justify-center")  
+      button(type="submit" class="btn my-3") Enviar
 
   if errors
     ul
