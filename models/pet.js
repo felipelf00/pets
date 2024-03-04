@@ -10,6 +10,7 @@ const PetSchema = new Schema({
   sex: { type: String, enum: ["macho", "fêmea"], default: null },
   date_of_birth: { type: Date },
   tutor: { type: Schema.Types.ObjectId, ref: "Tutor" },
+  deleted: { type: Date, default: null },
 });
 
 PetSchema.virtual("age").get(function () {

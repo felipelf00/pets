@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1=title 
+
+  p Deseja remover #{pet.name}?
+  br
+  form(method="POST")
+    div.form-group
+      label(for=password) Digite a senha para confirmar:
+      input#password(type="password" name="password" required)
+    button.btn(type="submit") Confirmar 
+
+  if error 
+    p(class="text-red-800") #{error}

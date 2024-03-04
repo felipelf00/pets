@@ -7,6 +7,7 @@ const TutorSchema = new Schema({
   phone: { type: String, required: true, maxLength: 16 },
   email: { type: String, required: true, maxLength: 100 },
   address: { type: String, required: true, maxLength: 100 },
+  deleted: { type: Date, default: null },
 });
 
 TutorSchema.virtual("url").get(function () {

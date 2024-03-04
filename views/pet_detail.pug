@@ -16,3 +16,5 @@ block content
       a(href=`/registry/tutor/${pet.tutor._id}`)  #{pet.tutor.name}
     else 
       |  Não especificado
+  br
+  a(href=`/registry/pet/${pet.id}/delete` class="text-red-800") Remover pet

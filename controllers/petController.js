@@ -6,8 +6,8 @@ const { body, validationResult } = require("express-validator");
 // Index
 exports.index = asyncHandler(async (req, res, next) => {
   const [countPets, countTutors] = await Promise.all([
-    Pet.countDocuments({}).exec(),
-    Tutor.countDocuments({}).exec(),
+    Pet.countDocuments({ deleted: null }).exec(),
+    Tutor.countDocuments({ deleted: null }).exec(),
   ]);
 
   res.render("index", {
@@ -19,7 +19,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 
 // Display all pets
 exports.pet_list = asyncHandler(async (req, res, next) => {
-  const allPets = await Pet.find().sort({ name: 1 }).exec();
+  const allPets = await Pet.find({ deleted: null }).sort({ name: 1 }).exec();
 
   res.render("pet_list", {
     title: "Lista de pets",
@@ -31,8 +31,6 @@ exports.pet_list = asyncHandler(async (req, res, next) => {
 exports.pet_detail = asyncHandler(async (req, res, next) => {
   // res.send(`Não implementado: detalhe pet: ${req.params.id}`);
   const pet = await Pet.findById(req.params.id).populate("tutor").exec();
-
-  console.log("Pet: " + pet);
 
   if (pet === null) {
     const err = new Error("Pet não encontrado");
@@ -48,7 +46,9 @@ exports.pet_detail = asyncHandler(async (req, res, next) => {
 
 // Create pet get
 exports.pet_create_get = asyncHandler(async (req, res, next) => {
-  const allTutors = await Tutor.find().sort({ name: 1 }).exec();
+  const allTutors = await Tutor.find({ deleted: null })
+    .sort({ name: 1 })
+    .exec();
 
   res.render("pet_form", {
     title: "Cadastrar novo pet",
@@ -117,7 +117,6 @@ exports.pet_create_post = [
         errors: errors.array(),
       });
     } else {
-      console.log("Pet before save: ", pet);
       await pet.save();
       res.redirect(pet.url);
     }
@@ -126,12 +125,40 @@ exports.pet_create_post = [
 
 // Delete pet get
 exports.pet_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: excluir (get)");
+  const pet = await Pet.findById(req.params.id);
+
+  if (pet === null) res.redirect("/registry/pets");
+
+  console.log("Id: " + req.params.id);
+  console.log("Pet enviado por get: " + pet.name);
+
+  res.render("pet_delete", {
+    title: `Remover pet`,
+    pet: pet,
+  });
 });
 
 // Delete pet post
 exports.pet_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: excluir (post)");
+  const pet = await Pet.findById(req.params.id);
+
+  if (pet === null) {
+    const err = new Error("Pet não encontrado");
+    err.status = 404;
+    return next(err);
+  }
+
+  if (req.body.password !== process.env.MODIFY_KEY) {
+    return res.render("pet_delete", {
+      title: "Remover pet",
+      pet: pet,
+      error: "Senha incorreta",
+    });
+  }
+
+  pet.deleted = new Date();
+  await pet.save();
+  res.redirect("/registry/pets");
 });
 
 // Update pet get

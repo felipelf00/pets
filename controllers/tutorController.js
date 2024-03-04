@@ -6,7 +6,9 @@ const { body, validationResult } = require("express-validator");
 // Display all tutors
 exports.tutor_list = asyncHandler(async (req, res, next) => {
   // res.send("Não implementado: lista de tutores");
-  const allTutors = await Tutor.find().sort({ name: 1 }).exec();
+  const allTutors = await Tutor.find({ deleted: null })
+    .sort({ name: 1 })
+    .exec();
 
   res.render("tutor_list", {
     title: "Lista de tutores",
@@ -18,7 +20,7 @@ exports.tutor_list = asyncHandler(async (req, res, next) => {
 exports.tutor_detail = asyncHandler(async (req, res, next) => {
   const [tutor, allPetsByTutor] = await Promise.all([
     Tutor.findById(req.params.id).exec(),
-    Pet.find({ tutor: req.params.id }).exec(),
+    Pet.find({ tutor: req.params.id, deleted: null }).exec(),
   ]);
 
   if (tutor === null) {
