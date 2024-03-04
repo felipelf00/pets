@@ -125,22 +125,19 @@ exports.pet_create_post = [
 
 // Delete pet get
 exports.pet_delete_get = asyncHandler(async (req, res, next) => {
-  const pet = await Pet.findById(req.params.id);
+  const pet = await Pet.findById(req.params.id).exec();
 
-  if (pet === null) res.redirect("/registry/pets");
-
-  console.log("Id: " + req.params.id);
-  console.log("Pet enviado por get: " + pet.name);
+  if (pet === null || pet.deleted !== null) res.redirect("/registry/pets");
 
   res.render("pet_delete", {
-    title: `Remover pet`,
+    title: "Remover pet",
     pet: pet,
   });
 });
 
 // Delete pet post
 exports.pet_delete_post = asyncHandler(async (req, res, next) => {
-  const pet = await Pet.findById(req.params.id);
+  const pet = await Pet.findById(req.params.id).exec();
 
   if (pet === null) {
     const err = new Error("Pet não encontrado");

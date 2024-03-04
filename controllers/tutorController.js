@@ -86,12 +86,51 @@ exports.tutor_create_post = [
 
 // Delete tutor get
 exports.tutor_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: excluir (get)");
+  const tutor = await Tutor.findById(req.params.id).exec();
+  const allPetsByTutor = await Pet.find({ tutor: req.params.id });
+
+  if (tutor === null || tutor.deleted !== null)
+    res.redirect("/registry/tutors");
+
+  res.render("tutor_delete", {
+    title: "Remover tutor",
+    tutor: tutor,
+    pets: allPetsByTutor,
+  });
 });
 
 // Delete tutor post
 exports.tutor_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: excluir (post)");
+  const tutor = await Tutor.findById(req.params.id);
+  const allPetsByTutor = await Pet.find({ tutor: req.params.id });
+
+  if (tutor === null) {
+    const err = new Error("Tutor não encontrado");
+    err.status = 404;
+    return next(err);
+  }
+
+  if (req.body.password !== process.env.MODIFY_KEY) {
+    return res.render("tutor_delete", {
+      title: "Remover tutor",
+      tutor: tutor,
+      pets: allPetsByTutor,
+      error: "Senha incorreta",
+    });
+  }
+
+  //delete all associated pets (soft)
+  await Promise.all(
+    allPetsByTutor.map((pet) => {
+      pet.deleted = new Date();
+      return pet.save();
+    })
+  );
+
+  tutor.deleted = new Date();
+  await tutor.save();
+
+  res.redirect("/registry/tutors");
 });
 
 // Update tutor get

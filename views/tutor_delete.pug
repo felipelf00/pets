@@ -1,0 +1,21 @@
+extends layout
+
+block content 
+  h1=title 
+
+  if pets 
+    p(class="text-red-800 font-extrabold") Atenção! Remover este tutor também irá remover os seus pets: 
+    ul
+      for pet in pets
+        li!= pet.name
+  br
+  p Deseja remover #{tutor.name} e todos os seus pets?
+  br
+  form(method="POST")
+    div.form-group
+      label(for="password") Digite a senha para confirmar: 
+      input#password(type="password" name="password" required)
+    button.btn(type="submit") Confirmar 
+
+  if error 
+    p(class="text-red-800") #{error}
