@@ -25,8 +25,8 @@ block content
           option(value="fêmea" selected=(pet && pet.sex === "fêmea")) Fêmea
     div(class="form-group flex justify-between items-center")
       label(for="date_of_birth") Data de nascimento (aproximada):
-      //- input#date_of_birth(type='date' name='date_of_birth' value=(undefined===pet ? '' : pet.date_of_birth) )
-      input#date_of_birth(type='date' name='date_of_birth')
+      input#date_of_birth(type='date' name='date_of_birth' value=(undefined===pet ? '' : birthDate) )
+      //- input#date_of_birth(type='date' name='date_of_birth')
     div(class="form-group flex flex-col")
       label(for="tutor") Nome do tutor:
       select#tutor(name="tutor" value=(pet===undefined ? "" : pet.tutor))
