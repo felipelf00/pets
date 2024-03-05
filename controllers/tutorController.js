@@ -146,6 +146,7 @@ exports.tutor_update_get = asyncHandler(async (req, res, next) => {
   res.render("tutor_form", {
     title: "Modificar tutor",
     tutor: tutor,
+    update: true,
   });
 });
 
@@ -177,6 +178,15 @@ exports.tutor_update_post = [
       address: req.body.address,
       _id: req.params.id,
     });
+
+    if (req.body.password !== process.env.MODIFY_KEY) {
+      res.render("tutor_form", {
+        title: "Modificar tutor",
+        tutor: tutor,
+        update: true,
+        errors: [{ msg: "Senha incorreta" }],
+      });
+    }
 
     if (!errors.isEmpty()) {
       res.render("tutor_form", {

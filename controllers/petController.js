@@ -39,6 +39,10 @@ exports.pet_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
+  if (pet.date_of_birth) {
+    pet.date_of_birth = DateTime.fromJSDate(pet.date_of_birth);
+  }
+
   res.render("pet_detail", {
     title: pet.name,
     pet: pet,
@@ -179,6 +183,7 @@ exports.pet_update_get = asyncHandler(async (req, res, next) => {
     tutors: allTutors,
     pet: pet,
     birthDate: pet.date_of_birth.toISOString().split("T")[0],
+    update: true,
   });
 });
 
@@ -230,6 +235,20 @@ exports.pet_update_post = [
       tutor: req.body.tutor,
       _id: req.params.id,
     });
+
+    if (req.body.password !== process.env.MODIFY_KEY) {
+      const allTutors = await Tutor.find({ deleted: null })
+        .sort({ name: 1 })
+        .exec();
+      res.render("pet_form", {
+        title: "Modificar pet",
+        tutors: allTutors,
+        pet: pet,
+        birthDate: pet.date_of_birth.toISOString().split("T")[0],
+        update: true,
+        errors: [{ msg: "Senha incorreta" }],
+      });
+    }
 
     if (!errors.isEmpty()) {
       const allTutors = await Tutor.find({ deleted: null })

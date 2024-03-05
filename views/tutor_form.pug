@@ -15,12 +15,16 @@ block content
       input#email(type="email" placeholder="Ex: clenidas@bol.com.br" name="email" required value=(tutor===undefined ? "" : tutor.email))
     div(class="form-group flex flex-col")
       label(for="address") Endereço:
-      input#phone(type="text" placeholder="Rua 31 de Abril, 678, Guarabira-PB" name="address" required value=(tutor===undefined ? "" : tutor.address))
+      input#address(type="text" placeholder="Rua 31 de Abril, 678, Guarabira-PB" name="address" required value=(tutor===undefined ? "" : tutor.address))
     
-    div(class="flex justify-center")  
-      button(type="submit" class="btn my-3") Enviar
+    div(class="flex justify-between")  
+      if update
+        div(class="flex flex-col")
+          label(for="passsword") Digite a senha para confirmar alteração:
+          input#password(type="password" name="password" required)
+      button(type="submit" class="btn") Enviar
 
     if errors
       ul
         for error in errors
-          li!= error.msg
+          li(class="text-red-800")!= error.msg
