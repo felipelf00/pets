@@ -135,10 +135,58 @@ exports.tutor_delete_post = asyncHandler(async (req, res, next) => {
 
 // Update tutor get
 exports.tutor_update_get = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: modificar (get)");
+  const tutor = await Tutor.findById(req.params.id).exec();
+
+  if (tutor === null) {
+    const err = new Error("Tutor não encontrado");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("tutor_form", {
+    title: "Modificar tutor",
+    tutor: tutor,
+  });
 });
 
 // Update tutor post
-exports.tutor_update_post = asyncHandler(async (req, res, next) => {
-  res.send("Não implementado: modificar (post)");
-});
+exports.tutor_update_post = [
+  body("name", "Nome não pode estar vazio")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("phone")
+    .trim()
+    .matches(/^\(?[1-9]{2}\)? ?(?:[2-8]|9[0-9])[0-9]{3}\-?[0-9]{4}$/)
+    .withMessage("Telefone inválido.")
+    .escape(),
+  body("email").trim().isEmail().escape(),
+  body("address")
+    .trim()
+    .isLength({ min: 5 })
+    .withMessage("Endereço muito curto")
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const tutor = new Tutor({
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email,
+      address: req.body.address,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("tutor_form", {
+        title: "Modificar tutor",
+        tutor: tutor,
+        errors: errors.array(),
+      });
+    } else {
+      await Tutor.findByIdAndUpdate(req.params.id, tutor, {});
+      res.redirect(tutor.url);
+    }
+  }),
+];
