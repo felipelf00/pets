@@ -43,9 +43,15 @@ exports.pet_detail = asyncHandler(async (req, res, next) => {
     pet.date_of_birth = DateTime.fromJSDate(pet.date_of_birth);
   }
 
+  let weight = null;
+  if (pet.weight) {
+    weight = pet.weight.toString().replace(".", ",");
+  }
+
   res.render("pet_detail", {
     title: pet.name,
     pet: pet,
+    weight: weight,
   });
 });
 
@@ -210,8 +216,9 @@ exports.pet_update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
+  let formattedBirthDate = null;
   if (pet.date_of_birth) {
-    const formattedBirthDate = pet.date_of_birth.toISOString().split("T")[0];
+    formattedBirthDate = pet.date_of_birth.toISOString().split("T")[0];
   } else formattedBirthDate = null;
 
   res.render("pet_form", {

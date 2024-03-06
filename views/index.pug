@@ -2,8 +2,12 @@ extends layout
 
 block content
   h1(class="m-auto text-center")= title
-  p Seja bem-vindo! 
+  h3(class="text-2xl font-medium") Seja bem-vindo! 
   br
   p Esse site permite consultar nosso banco de dados de pets e tutores, bem como realizar operações de cadastramento, modificação e exclusão no banco de dados (requer permissão).
   br
   p No momento, nosso banco de dados tem !{`<a href="/registry/pets"><strong>${petCount} pets</strong></a>`} e !{`<a href="/registry/tutors"><strong>${tutorCount} tutores</strong></a>`} cadastrados.
+
+  div(class="flex h-72 my-20")
+    img(src="/images/sbn.jpg" class="object-contain w-full h-full")
+    img(src="/images/bil-dali.jpg" class="object-contain w-full h-full")
