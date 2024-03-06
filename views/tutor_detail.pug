@@ -2,10 +2,10 @@ extends layout
 
 block content 
   h1(class="m-auto text-center")=title
-  p Telefone: #{tutor.phone}
-  p E-mail: #{tutor.email}
-  p Endereço: #{tutor.address}
-  p Pets: 
+  p <span class="font-medium">Telefone:</span> #{tutor.phone}
+  p <span class="font-medium">E-mail:</span> #{tutor.email}
+  p <span class="font-medium">Endereço:</span> #{tutor.address}
+  p <span class="font-medium">Pets:</span>
   ul(class="list-disc ml-8")
     for pet in pets 
       li 

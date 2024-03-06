@@ -75,16 +75,25 @@ exports.pet_create_post = [
   body("weight")
     .optional({ checkFalsy: true })
     .trim()
-    .custom((value, { req }) => {
-      if (value) {
-        const valueWithDot = value.replace(",", ".");
-        if (!isNaN(parseFloat(valueWithDot))) {
-          req.body.weight = parseFloat(valueWithDot);
-          return true;
-        }
-      }
-      throw new Error("O peso deve ser um número");
-    }),
+    // .custom((value, { req }) => {
+    //   if (value) {
+    //     console.log("entered if");
+    //     const valueWithDot = value.replace(",", ".");
+    //     console.log("valueWithDot: " + valueWithDot);
+
+    //     if (!isNaN(parseFloat(valueWithDot))) {
+    //       req.body.weight = parseFloat(valueWithDot);
+    //       console.log("parsed value: " + parseFloat(valueWithDot));
+    //       console.log(
+    //         "req.body value: " +
+    //           req.body.weight +
+    //           ", type: " +
+    //           typeof req.body.weight
+    //       );
+    //     } else throw new Error("O peso deve ser um número");
+    //   }
+    // })
+    .escape(),
   body("sex")
     .optional({ checkFalsy: true })
     .trim()
@@ -96,11 +105,35 @@ exports.pet_create_post = [
     .toDate(),
   body("tutor").optional({ checkFalsy: true }).trim().escape(),
 
+  (req, res, next) => {
+    if (req.body.weight) {
+      // console.log("entered if");
+      const valueWithDot = req.body.weight.replace(",", ".");
+      // console.log("valueWithDot: " + valueWithDot);
+
+      if (!isNaN(parseFloat(valueWithDot))) {
+        req.body.weight = parseFloat(valueWithDot);
+        // console.log("parsed value: " + parseFloat(valueWithDot));
+        // console.log(
+        //   "req.body value: " +
+        //     req.body.weight +
+        //     ", type: " +
+        //     typeof req.body.weight
+        // );
+      } else throw new Error("O peso deve ser um número");
+    }
+    next();
+  },
+
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
     if (req.body.sex === "") req.body.sex = null;
     if (req.body.tutor === "") req.body.tutor = null;
+
+    console.log(
+      "peso: " + req.body.weight + ", type: " + typeof req.body.weight
+    );
 
     const pet = new Pet({
       name: req.body.name,
@@ -177,12 +210,15 @@ exports.pet_update_get = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
+  if (pet.date_of_birth) {
+    const formattedBirthDate = pet.date_of_birth.toISOString().split("T")[0];
+  } else formattedBirthDate = null;
 
   res.render("pet_form", {
     title: "Modificar pet",
     tutors: allTutors,
     pet: pet,
-    birthDate: pet.date_of_birth.toISOString().split("T")[0],
+    birthDate: formattedBirthDate,
     update: true,
   });
 });
@@ -198,19 +234,7 @@ exports.pet_update_post = [
     .isLength({ min: 2 })
     .escape(),
   body("description").optional({ checkFalsy: true }).trim().escape(),
-  body("weight")
-    .optional({ checkFalsy: true })
-    .trim()
-    .custom((value, { req }) => {
-      if (value) {
-        const valueWithDot = value.replace(",", ".");
-        if (!isNaN(parseFloat(valueWithDot))) {
-          req.body.weight = parseFloat(valueWithDot);
-          return true;
-        }
-      }
-      throw new Error("O peso deve ser um número");
-    }),
+  body("weight").optional({ checkFalsy: true }).trim().escape(),
   body("sex")
     .optional({ checkFalsy: true })
     .trim()
@@ -221,6 +245,17 @@ exports.pet_update_post = [
     .isISO8601()
     .toDate(),
   body("tutor").optional({ checkFalsy: true }).trim().escape(),
+
+  (req, res, next) => {
+    if (req.body.weight) {
+      const valueWithDot = req.body.weight.replace(",", ".");
+
+      if (!isNaN(parseFloat(valueWithDot))) {
+        req.body.weight = parseFloat(valueWithDot);
+      } else throw new Error("O peso deve ser um número");
+    }
+    next();
+  },
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
