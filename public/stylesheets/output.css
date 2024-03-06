@@ -661,6 +661,10 @@ video {
   border-radius: 0.125rem;
 }
 
+.rounded {
+  border-radius: 0.25rem;
+}
+
 .rounded-tl-sm {
   border-top-left-radius: 0.125rem;
 }

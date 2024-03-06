@@ -34,7 +34,6 @@ PetSchema.virtual("url").get(function () {
 });
 
 PetSchema.virtual("date_of_birth_formatted").get(function () {
-  console.log("original: " + this.date_of_birth);
   return this.date_of_birth
     ? DateTime.fromJSDate(this.date_of_birth, {
         zone: "utc",

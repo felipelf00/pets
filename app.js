@@ -7,10 +7,22 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const registryRouter = require("./routes/registry");
+const compression = require("compression");
+const helmet = require("helmet");
+const RateLimit = require("express-rate-limit");
 
 require("dotenv").config();
 
 var app = express();
+
+app.use(helmet());
+
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -29,6 +41,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
